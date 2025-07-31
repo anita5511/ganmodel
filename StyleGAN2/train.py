@@ -653,3 +653,12 @@ if __name__ == "__main__":
         wandb.init(project="stylegan 2")
 
     train(args, loader, generator, discriminator, g_optim, d_optim, g_ema, device, fid_record, sample_z)
+
+        # ─── Save out the trained generator ──────────────────────────────
+    if args.regan:
+        # ‘generator’ is your Regan_training wrapper
+        generator.save_generator("regan_generator.pth")
+
+
+
+
