@@ -656,8 +656,9 @@ if __name__ == "__main__":
 
         # ─── Save out the trained generator ──────────────────────────────
     if args.regan:
-        # ‘generator’ is your Regan_training wrapper
-        generator.save_generator("regan_generator.pth")
+        import os
+        os.makedirs("saved_models", exist_ok=True)                     # ← make folder
+        generator.save_generator("saved_models/regan_generator.pth")   # ← save into it
 
 
 
