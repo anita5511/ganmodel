@@ -95,3 +95,37 @@ class Regan_training(nn.Module):
         input_is_latent,
         noise,
         randomize_noise)
+
+
+    def save_generator(self, filepath: str):
+        """
+        Save only the generator's weights to disk.
+        """
+        # `self.model` is your full GAN; assume generator is `self.model.generator`
+        torch.save(self.model.generator.state_dict(), filepath)
+        print(f"Saved generator to {filepath}")
+
+    @staticmethod
+    def load_generator(filepath: str, device: torch.device, generator_cls, *args, **kwargs):
+        """
+        Load a standalone generator for inference.
+
+        Args:
+            filepath: path to .pth file
+            device: torch.device('cpu') or 'cuda'
+            generator_cls: the class of your generator (must match training definition)
+            *args, **kwargs: any init args for generator_cls
+        Returns:
+            gen: an instance of generator_cls with loaded weights and set to eval mode
+        """
+        # 1) instantiate the generator
+        gen = generator_cls(*args, **kwargs).to(device)
+        # 2) load weights
+        state = torch.load(filepath, map_location=device)
+        gen.load_state_dict(state)
+        # 3) set to eval and turn off grads
+        gen.eval()
+        for p in gen.parameters():
+            p.requires_grad = False
+        print(f"Loaded generator from {filepath}")
+        return gen
